@@ -6,6 +6,7 @@ import UserList from "./pages/Users/UserList/index.jsx";
 import Main from "./components/Layout/Main/index.jsx";
 import Dashboard from "./pages/Dashboard/index.jsx"
 import UserEdit from "./pages/Users/UserEdit/index.jsx";
+import UserCreate from "./pages/Users/UserCreate/index.jsx";
 function App() {
 
     return (
@@ -17,6 +18,7 @@ function App() {
                     <Route path="dashboard" element={<Dashboard />} />
                     <Route path="users" element={<UserList/>} />
                     <Route path="users/:uid/edit" element={<UserEdit/>} />
+                    <Route path="users/create" element={<UserCreate/>} />
                 </Route>
             </Routes>
         </>

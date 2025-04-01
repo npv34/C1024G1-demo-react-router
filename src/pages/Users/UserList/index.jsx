@@ -1,70 +1,45 @@
 import {useEffect, useState} from "react";
 import FormSearch from "./FormSearch.jsx";
-import FormCreate from "./FormCreate.jsx";
-import Weather from "../../../components/Weather/Weather.jsx";
-import {Rating} from "@mui/material";
+import {Button, Rating} from "@mui/material";
 import { Link} from "react-router";
-const data = [
-    {
-        id: 1,
-        name: "John Doe",
-        email: "john.doe@example.com",
-        rating: 4
-    },
-    {
-        id: 2,
-        name: "Jane Doe",
-        email: "jane.doe@example.com",
-        rating: 3
-    },
-    {
-        id: 3,
-        name: "Mike Doe",
-        email: "mike.doe@example.com",
-        rating: 2
-    }
-]
+import {toast} from "react-toastify";
+import UserService from "../../../services/user.service.js";
+
 
 function UserList() {
-    const  [users, setUsers] = useState(data)
-    const  [showFormCreate, setShowFormCreate] = useState(false)
-    const  [showWeather, setShowWeather] = useState(false)
+    const  [users, setUsers] = useState([])
+    const [reloadData, serReloadData] = useState(false)
 
     const handleDeleteUser = (id) => {
         if (window.confirm('Are you sure you want to delete')) {
-            const newUsers = users.filter(user => user.id !== id);
-            setUsers(newUsers); // cap nhat lai component
+            UserService.deleteUserById(id).then(res => {
+                toast.success("Delete user successfully");
+                serReloadData(!reloadData);
+            })
         }
     }
 
     const handleSearchUser = (e) => {
         const keyword = e.target.value;
-        const newUserFilter = data.filter(user => user.name.toLowerCase().includes(keyword.toLowerCase()));
-        setUsers(newUserFilter); // cap nhat lai component
+        UserService.searchUserByName(keyword).then(res => {
+            setUsers(res.data)
+        })
     }
 
-    const handleShowFormCreate = () => {
-        setShowFormCreate(!showFormCreate);
-    }
-
-    const handleShowWeather = () => {
-        setShowWeather(!showWeather);
-    }
 
     useEffect(() => {
-        console.log("Component UserList is mounted"); // ung voi componentDidMount
-        return () => {
-            console.log("Component UserList is unmounted"); // ung voi componentWillUnmount
-        }
-    }, [showWeather, showFormCreate]);
+        UserService.getAllUser().then(res => {
+            setUsers(res.data)
+        })
 
-    useEffect(() => {
+    }, [reloadData]);
 
-    }, [])
 
-    const handleRatingUser = (newRating, index) => {
-        users[index].rating = newRating;
-        setUsers([...users]); // cap nhat lai component
+    const handleRatingUser = (newRating, id) => {
+       UserService.updateRatingUser(newRating, id).then(res => {
+           toast.success("Update rating user successfully");
+           serReloadData(!reloadData);
+       })
     }
 
     return (
@@ -74,8 +49,13 @@ function UserList() {
                     <div className="col-12 col-md-12">
                         <h5 className="card-header">
                             <div className="row">
-                                <div className="col-md-3">User List</div>
-                                <div className="col-md-9">
+                                <div className="col-md-4">
+                                    <span className={"me-2"}>User List</span>
+                                    <Link to={"/admin/users/create"}>
+                                        <Button variant={"contained"}>Create</Button>
+                                    </Link>
+                                </div>
+                                <div className="col-md-8">
                                     <FormSearch handleActionSearch={handleSearchUser}/>
                                 </div>
                             </div>
@@ -102,7 +82,7 @@ function UserList() {
                                                 name="simple-controlled"
                                                 value={user.rating}
                                                 onChange={(event, newValue) => {
-                                                   handleRatingUser(newValue, index)
+                                                   handleRatingUser(newValue, user.id)
                                                 }}/>
                                         </td>
                                         <td>
