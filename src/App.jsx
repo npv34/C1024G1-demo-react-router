@@ -14,12 +14,15 @@ function App() {
             <Routes>
                 <Route path="/login" element={<Login/>} />
                 <Route path="/register" element={<Register/>} />
+
                 <Route path="/admin" element={<Main/>} >
                     <Route path="dashboard" element={<Dashboard />} />
                     <Route path="users" element={<UserList/>} />
                     <Route path="users/:uid/edit" element={<UserEdit/>} />
                     <Route path="users/create" element={<UserCreate/>} />
                 </Route>
+
+
             </Routes>
         </>
     )

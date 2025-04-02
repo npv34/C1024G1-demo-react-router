@@ -12,13 +12,18 @@ import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
+import {useDispatch} from "react-redux";
+import {logout} from "../../../redux/features/auth/AuthSlice.js";
+import {useNavigate} from "react-router";
+import {toast} from "react-toastify";
 
 const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
 
 function HeaderTop() {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
+    const dispatch = useDispatch();
+    const  navigate = useNavigate();
 
     const handleOpenNavMenu = (event) => {
         setAnchorElNav(event.currentTarget);
@@ -34,6 +39,13 @@ function HeaderTop() {
     const handleCloseUserMenu = () => {
         setAnchorElUser(null);
     };
+
+    const handleLogout = () => {
+        localStorage.removeItem("userLogin")
+        dispatch(logout())
+        toast.success("Logout successful")
+        navigate("/login")
+    }
 
     return (
         <AppBar position="static">
@@ -144,11 +156,11 @@ function HeaderTop() {
                             open={Boolean(anchorElUser)}
                             onClose={handleCloseUserMenu}
                         >
-                            {settings.map((setting) => (
-                                <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                                    <Typography sx={{ textAlign: 'center' }}>{setting}</Typography>
+
+                                <MenuItem onClick={handleLogout}>
+                                    <Typography sx={{ textAlign: 'center' }}>Logout</Typography>
                                 </MenuItem>
-                            ))}
+
                         </Menu>
                     </Box>
                 </Toolbar>

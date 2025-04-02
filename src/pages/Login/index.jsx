@@ -2,10 +2,16 @@ import {Link, useNavigate} from "react-router";
 import {Button} from "@mui/material";
 import {useFormik} from "formik";
 import {toast} from "react-toastify";
+import {useState} from "react";
+import {useDispatch, useSelector} from "react-redux";
+import {login} from "../../redux/features/auth/AuthSlice.js";
 
 function Login() {
-
+    const [userLogin, setUserLogin] = useState();
     const navigate = useNavigate();
+    const dispatch = useDispatch();
+
+    const auth = useSelector(state => state.auth);
 
     // tao form su dung formik
     const formLogin = useFormik({
@@ -19,6 +25,8 @@ function Login() {
             // xu ly logic login
             const { username, password } = values;
             if (username == 'luanpv' && password == '1234') {
+                localStorage.setItem("userLogin", username)
+                dispatch(login(username))
                 // chuyen trang
                 toast.success("Login success");
                 navigate("/admin/dashboard");

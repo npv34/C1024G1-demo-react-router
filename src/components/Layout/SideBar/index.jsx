@@ -13,20 +13,29 @@ import ExpandMore from '@mui/icons-material/ExpandMore';
 import StarBorder from '@mui/icons-material/StarBorder';
 import { Link } from 'react-router';
 import "./SideBar.css";
+import {useSelector} from "react-redux";
+import {useEffect} from "react";
 
 
 export default function SideBar() {
+    const auth = useSelector(state => state.auth);
+
     const [open, setOpen] = React.useState(true);
 
     const [selectedIndex, setSelectedIndex] = React.useState(0);
 
+    useEffect(() => {
+        const currentMenuIndex = localStorage.getItem("menu-index");
+        if (currentMenuIndex) {
+            setSelectedIndex(parseInt(currentMenuIndex))
+        }
+    }, [])
+
     const handleListItemClick = (event, index) => {
+        localStorage.setItem("menu-index", index)
         setSelectedIndex(index);
     };
 
-    const handleClick = () => {
-        setOpen(!open);
-    };
 
     return (
         <List
@@ -35,7 +44,7 @@ export default function SideBar() {
             aria-labelledby="nested-list-subheader"
             subheader={
                 <ListSubheader sx={{ backgroundColor: 'green', color: 'white'}} component="div" id="nested-list-subheader">
-                    Manager
+                    Xin chao: { auth.userLogin }
                 </ListSubheader>
             }
         >
